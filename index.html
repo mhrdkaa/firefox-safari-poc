@@ -3,19 +3,19 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>Sandbox Escape PoC</title>
+    <title>Ghost Gesture PoC</title>
     <style>
         iframe {
-            width: 400px;
-            height: 300px;
-            border: 2px solid black;
+            width: 500px;
+            height: 400px;
+            border: 2px dashed #333;
         }
     </style>
 </head>
 
 <body>
-    <iframe src="https://mhrdkaa.github.io/prepok/site-a.html"
-        sandbox="allow-scripts allow-popups allow-popups-to-escape-sandbox">
+    <h2>Parent Page (Host)</h2>
+    <iframe src="https://mhrdkaa.github.io/firefox-safari-poc/site-a.html" sandbox="allow-scripts allow-same-origin">
     </iframe>
 </body>
 
