@@ -30,27 +30,9 @@
     <script>
         setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
         setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
-
-        window.addEventListener('keyup', async (e) => {
-            if (e.key === 'Enter') {
-                const status = document.getElementById('status');
-
-                if (navigator.userActivation.isActive) {
-                    try {
-                        await document.documentElement.requestFullscreen();
-
-                        document.body.innerHTML = `
-                            <h1 style="color:red;">HACKED BY GHOST GESTURE</h1>
-                            <p>Layar Anda berhasil dipaksa masuk Fullscreen tanpa klik di halaman ini!</p>
-                            <button onclick="document.exitFullscreen()">Keluar</button>
-                        `;
-                    } catch (err) {
-                        console.log("Fullscreen failed:", err);
-                        alert("Ghost Gesture Terdeteksi Aktif, tapi Fullscreen diblokir Sandbox: " + err.name);
-                    }
-                } else {
-                    alert("Gagal: User Activation tidak terbawa.");
-                }
+        window.addEventListener('keyup', (e) => {
+            if (e.key === 'Enter' && navigator.userActivation.isActive) {
+                window.open("https://example.com", "_blank");
             }
         });
     </script>
