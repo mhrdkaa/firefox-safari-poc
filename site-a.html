@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Site A</title>
+    <style>
+        body {
+            background-color: #ffebee;
+        }
+    </style>
+</head>
+
+<body>
+    <h3>Situs A (Origin 1)</h3>
+    <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
+    <script>
+        document.getElementById('targetBtn').focus();
+
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";
+                window.location.href = 'https://mhrdkaa.github.io/meta/site-b.html';
+            }
+        });
+    </script>
+</body>
+
+</html>
