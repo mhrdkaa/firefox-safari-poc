@@ -15,8 +15,10 @@
 
 <body>
     <h2>Parent Page (Host)</h2>
-    <iframe src="https://mhrdkaa.github.io/firefox-safari-poc/site-a.html" sandbox="allow-scripts">
-    </iframe>
+    <iframe src="https://mhrdkaa.github.io/firefox-safari-poc/site-a.html"
+        sandbox="allow-scripts allow-same-origin allow-top-navigation-by-user-activation"
+        allow="clipboard-read; clipboard-write; display-capture"
+        style="width:600px;height:400px;border:1px solid black;"></iframe>
 </body>
 
 </html>
