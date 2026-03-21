@@ -15,7 +15,6 @@
     <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
     <script>
         document.getElementById('targetBtn').focus();
-
         window.addEventListener('keydown', (e) => {
             if (e.key === 'Enter') {
                 document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";

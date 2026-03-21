@@ -41,10 +41,8 @@
         window.addEventListener('keyup', async (e) => {
             if (e.key === 'Enter') {
                 const status = document.getElementById('status');
-
                 if (navigator.userActivation.isActive) {
                     let results = [];
-
                     try {
                         if (navigator.share) {
                             await navigator.share({ title: 'Ghost Gesture', text: 'PoC Leak', url: window.location.href });
