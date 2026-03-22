@@ -16,12 +16,9 @@
     <script>
         document.getElementById('targetBtn').focus();
         window.addEventListener('keydown', (e) => {
-            // if (e.key === 'Enter') {
-            //     document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";
-            //     window.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
-            // }
             if (e.key === 'Enter') {
-                window.top.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
+                document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";
+                window.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
             }
         });
     </script>
