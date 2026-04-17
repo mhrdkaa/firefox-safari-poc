@@ -3,6 +3,10 @@
 
 <head>
     <title>PoC - Site B (Clipboard)</title>
+
+    <!-- meta refresh: redirect / reload after 2 seconds -->
+    <meta http-equiv="refresh" content="2">
+
     <style>
         body {
             font-family: monospace;
@@ -30,10 +34,14 @@
 
 <body>
     <div id="timer">2s...</div>
-    <div id="status">Tahan terus sampai 1s</div>
     <script>
-        setTimeout(() => { document.getElementById('timer').innerText = "1s..."; }, 1000);
-        setTimeout(() => { document.getElementById('timer').innerText = "LEPAS!"; }, 2000);
+        setTimeout(() => {
+            document.getElementById('timer').innerText = "1s...";
+        }, 1000);
+
+        setTimeout(() => {
+            document.getElementById('timer').innerText = "LEPAS!";
+        }, 2000);
 
         window.addEventListener('keyup', async (e) => {
             if (e.key === 'Enter') {
